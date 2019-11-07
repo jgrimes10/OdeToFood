@@ -69,7 +69,28 @@ namespace OdeToFood.Web.Controllers
             if (!ModelState.IsValid) return View(restaurant);
 
             _db.Update(restaurant);
+            TempData["Message"] = "You have saved the restaurant!";
             return RedirectToAction("Details", new {id = restaurant.Id});
+        }
+
+        [HttpGet]
+        public ActionResult Delete(int id)
+        {
+            var model = _db.Get(id);
+            if (model == null)
+            {
+                return View("NotFound");
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Delete(int id, FormCollection form)
+        {
+            _db.Delete(id);
+            return RedirectToAction("Index");
         }
     }
 }
